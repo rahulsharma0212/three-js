@@ -2,6 +2,56 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+/*
+const image = new Image();
+const doorTexture = new THREE.Texture(image);
+image.onload = () => {
+    doorTexture.needsUpdate = true;
+};
+image.src = "textures/door/color.jpg";
+ */
+
+// texture loader
+const loadingManager = new THREE.LoadingManager();
+loadingManager.onStart = () => {
+    console.log("Start");
+};
+loadingManager.onProgress = () => {
+    console.log("Progress");
+};
+loadingManager.onLoad = () => {
+    console.log("load");
+};
+loadingManager.onError = () => {
+    console.log("Error");
+};
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const colortexture = textureLoader.load("textures/minecraft.png");
+// const colortexture = textureLoader.load("textures/checkerboard-8x8.png");
+// const colortexture = textureLoader.load("textures/checkerboard-1024x1024.png");
+// const colortexture = textureLoader.load("textures/door/color.jpg");
+const alphatexture = textureLoader.load("textures/door/alpha.jpg");
+const heighttexture = textureLoader.load("textures/door/height.jpg");
+const normaltexture = textureLoader.load("textures/door/normal.jpg");
+const metalnesstexture = textureLoader.load("textures/door/metalness.jpg");
+const roughnesstexture = textureLoader.load("textures/door/roughness.jpg");
+
+// colortexture.repeat.x = 2;
+// colortexture.repeat.y = 3;
+// colortexture.wrapS = THREE.MirroredRepeatWrapping;
+// colortexture.wrapT = THREE.MirroredRepeatWrapping;
+
+// colortexture.offset.x = 0.5;
+// colortexture.offset.y = 0.5;
+
+// colortexture.rotation = Math.PI / 4;
+// colortexture.center.x = 0.5;
+// colortexture.center.y = 0.5;
+
+colortexture.generateMipmaps = false;
+// colortexture.minFilter = THREE.NearestFilter;
+colortexture.magFilter = THREE.NearestFilter;
+
 /**
  * Base
  */
@@ -15,7 +65,13 @@ const scene = new THREE.Scene();
  * Object
  */
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+console.log(geometry.attributes.uv);
+// const geometry = new THREE.SphereGeometry(1, 32, 32);
+// const geometry = new THREE.ConeGeometry(1, 1, 32);
+// const geometry = new THREE.TorusGeometry(1, 0.25, 32, 32);
+const material = new THREE.MeshBasicMaterial({
+    map: colortexture,
+});
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
@@ -63,7 +119,7 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     100
 );
-camera.position.z = 3;
+camera.position.z = 2;
 scene.add(camera);
 
 // Controls
